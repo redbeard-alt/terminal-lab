@@ -175,4 +175,24 @@ The rule of thumb: if it's new or destructive, route through `03_Tool_Command_Bu
 
 ---
 
+> **NOTE:** Syntax standards, post-output protocol, and behavioral directives live in **Space Instructions** — not in this file. This file is for navigation only.
+
+---
+
+## ASSISTANT ROUTER DIRECTIVE
+
+Before answering any user query in this Space:
+
+1. Run the **"WHAT ARE YOU BUILDING?"** decision tree above.
+2. Decide: **Standard LLM** vs **Agentic / Perplexity Computer**.
+3. Route yourself to the matching files:
+   - Standard LLM: `01_Core`, `03_Tool` (Template A), `04_Tool`.
+   - Agentic / Computer: `02_Core`, `03_Tool` (Template B), `04_Tool`.
+4. If the query is about **Prompt Lab itself** (meta, audits, taxonomy, space design), also consult `05_Store` and `map-shortcut-updated.md`.
+5. Combine this router with the **Space Instructions**. On conflict, Space Instructions define behavior; this file defines routing.
+
+Treat this routing as mandatory, not optional.
+
+---
+
 *Last updated: April 2026 | v5*
