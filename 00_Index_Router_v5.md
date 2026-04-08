@@ -88,6 +88,24 @@
 
 ---
 
+### Perplexity Space Management (local scaffolding)
+
+Query: Creating, scaffolding, or managing Perplexity Spaces from the terminal
+
+- **Definition, structure, file naming conventions** → `docs/50_Ops_Perplexity_Space_Scaffolding.md`
+- **`newspace` / `space-doc` zsh functions** → `docs/50_Ops_Perplexity_Space_Scaffolding.md`
+- **Template seed file** → `/Users/bryanjhein/Perplexity-Spaces/_templates/Space_Template_v2.md`
+
+| Query | Go to |
+|---|---|
+| Scaffold a new Space folder + files | `newspace <Space-Name>` — see `docs/50_Ops_Perplexity_Space_Scaffolding.md` |
+| Add a `docs/` file to an existing Space | `space-doc <Space-Name> <NN_Area_Thing>` — see `docs/50_Ops_Perplexity_Space_Scaffolding.md` |
+| Review Space structure or naming conventions | `docs/50_Ops_Perplexity_Space_Scaffolding.md` → Section 3 |
+| Audit Space Instructions against canonical template | `docs/50_Ops_Perplexity_Space_Scaffolding.md` → Section 5 |
+| Tree view of all Spaces | `eza --tree --level=2 $SPACES_ROOT` |
+
+> Note: This is a local workflow tool — it lives in the `Perplexity-Spaces` tree, not the `terminal-lab` Git repo. It is NOT routed to Prompt Lab.
+
 ## MCP Servers Quick Routing
 
 | Query | Go to |

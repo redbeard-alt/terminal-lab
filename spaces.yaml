@@ -1,0 +1,26 @@
+version: 1
+
+defaults:
+  dropbox_root: "/Users/<you>/Dropbox/Perplexity"
+  backup_root: "/Users/<you>/Dropbox/Perplexity/_backups"
+  repo_root: "/Users/<you>/git/perplexity-space-tools"
+
+spaces:
+  terminal-lab:
+    name: "Terminal Lab"
+    folder: "Terminal Lab"
+    patterns:
+      include:
+        - "**/*.md"
+      exclude:
+        - "_backups/**"
+        - ".git/**"
+  prompt-lab:
+    name: "Prompt Lab"
+    folder: "Prompt Lab"
+    patterns:
+      include:
+        - "**/*.md"
+      exclude:
+        - "_backups/**"
+        - ".git/**"

@@ -1,4 +1,4 @@
-TITLE Terminal Lab Index & Router v4
+# TITLE Terminal Lab Index & Router v4
 
 Overview
 - Purpose: Router and index for Terminal Lab. Helps you jump to the right file for shell basics, advanced workflows, AI terminal tools, and battle-tested commands.
