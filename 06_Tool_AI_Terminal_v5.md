@@ -512,7 +512,6 @@ alias ai-models="ollama list"
 alias ai-status="ollama ps"
 alias ai-stop-all="ollama ps | tail -n +2 | awk '{print \$1}' | xargs -I {} ollama stop {}"
 
-alias mlx8b='mlx_lm.generate --model mlx-community/Llama-3.1-8B-Instruct-4bit --max-tokens 512 --prompt'
 alias mlx-whisper-test='source ~/.venvs/whisper/bin/activate && mlx_whisper'
 
 alias cc="claude"
@@ -520,6 +519,30 @@ alias cc-resume="claude --resume"
 alias cc-check="claude --doctor"
 alias cc-continue="claude --continue"
 ```
+
+### MLX Shim Scripts (use instead of aliases — no venv activation leak)
+
+```bash
+mkdir -p ~/.local/bin
+
+cat > ~/.local/bin/mlx8b << 'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+~/.venvs/mlx/bin/python3 -m mlx_lm.generate \\
+  --model mlx-community/Llama-3.1-8B-Instruct-4bit \\
+  --max-tokens 512 --prompt "$@"
+EOF
+chmod +x ~/.local/bin/mlx8b
+```
+
+Ensure `~/.local/bin` is on PATH (add to `.zshrc` if missing):
+
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+Ollama aliases (`ai8b`, `ai14b`, `ai-think`, etc.) are unchanged — they don't need venvs.
+Claude aliases (`cc`, `cc-resume`, etc.) are unchanged.
 
 ---
 
