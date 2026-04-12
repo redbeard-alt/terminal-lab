@@ -364,12 +364,24 @@
 - **Use Case:** dev-tools | **OS:** macOS | **Risk:** 🟢 Green
 - **Command:**
   ```bash
-  pip3 install --user package_name                              # Option 1 — preferred
-  python3 -m venv ~/.venvs/tools && source ~/.venvs/tools/bin/activate  # Option 2 — isolation
-  pip3 install --break-system-packages package_name             # Option 3 — one-offs only
+  # Tier 1: system tools
+  brew install ffmpeg jq pipx
+
+  # Tier 2: standalone CLI tools
+  pipx install ruff
+
+  # Tier 3: libraries/ML in venvs (preferred)
+  python3 -m venv ~/.venvs/tool
+  source ~/.venvs/tool/bin/activate
+  pip install --upgrade pip
+  pip install <pkg>
+  deactivate
+
+  # Tier 4: last resort (breaks on brew upgrade python)
+  pip3 install --user <pkg>
   ```
-- **Tested:** 2026-03-23 | ✅ Verified
-- **Notes:** `--user` is the safe default. Venv is best for anything you'll use repeatedly.
+- **Tested:** 2026-04-12 | ✅ Updated
+- **Notes:** `--user` is last resort. `--break-system-packages` removed from guidance. Pin Python version for ML venvs if needed (`/opt/homebrew/bin/python3.12`). See `02_Core Part 4`.
 
 ---
 
