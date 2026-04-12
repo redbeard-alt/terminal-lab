@@ -244,16 +244,17 @@ vm_stat | head -5                # 🟢 Memory stats (macOS)
 ## PYTHON FROM TERMINAL  
   
 ```bash  
-pip3 install --user package_name                      # 🟡 Safe install (PEP 668)  
-python3 -m venv ~/.venvs/tools && \  
-  source ~/.venvs/tools/bin/activate                  # 🟡 Create + activate venv  
-  
-python3 -c "import pypdf; print(pypdf.__version__)"   # 🟢 Check package version  
-python3 script.py --dry-run                           # 🟢 Preview behavior if script supports it  
-python3 -m http.server 8000                          # 🟡 Quick HTTP server  
+brew install pipx                                  # One-time: install pipx  
+pipx install <cli-tool>                            # Global CLI tools (ruff, httpie, black)  
+python3 -m venv ~/.venvs/<tool>                    # Project/library isolation (preferred)  
+source ~/.venvs/<tool>/bin/activate  
+pip install <pkg>  
+deactivate  
+# pip3 install --user <pkg>                        # Last resort — breaks on brew upgrade python  
 ```  
   
-> PEP 668: Homebrew Python blocks `pip3 install` system-wide. Use `--user` or a venv. See `02_Core_Advanced.md` Part 4.  
+PEP 668: Homebrew Python blocks global `pip3 install`.  
+Use venvs for libraries, pipx for CLI tools. See `02_Core_Advanced.md` Part 4.  
   
 ---  
   
