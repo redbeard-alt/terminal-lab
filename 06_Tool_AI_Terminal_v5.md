@@ -157,7 +157,7 @@ mlx_lm.generate \
   --prompt "Summarize key AI trends for researchers in 2026" \
   --max-tokens 512
 
-alias mlx8b='mlx_lm.generate --model mlx-community/Llama-3.1-8B-Instruct-4bit --max-tokens 512 --prompt'
+# mlx8b shim (see Part 5 — ~/.local/bin/mlx8b)
 mlx8b "What is the difference between MLX and Ollama?"
 ```
 
@@ -634,7 +634,7 @@ curl -s http://localhost:11434/api/tags | jq '.models[].name'
 
 | Problem | Fix |
 |---|---|
-| `ModuleNotFoundError: mlx` | `pip3 install --user mlx-lm` |
+| `ModuleNotFoundError: mlx` | Activate venv: `source ~/.venvs/mlx/bin/activate` |
 | CPU instead of GPU | Update macOS, check device |
 | Download fails | Check `~/.cache/huggingface` |
 | Out of memory | Use 4-bit model |
