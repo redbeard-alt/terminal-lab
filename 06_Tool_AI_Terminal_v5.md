@@ -702,10 +702,18 @@ for model in llama3.1:8b deepseek-r1:8b qwen2.5:14b; do
   ollama pull "$model" >> "$LOG" 2>&1
 done
 
-pip3 install --user --upgrade mlx-lm >> "$LOG" 2>&1
+# --- MLX-LM (venv) ---
+source ~/.venvs/mlx/bin/activate
+pip show mlx-lm 2>/dev/null | grep -E 'Name|Version' >> "$LOG"
+pip install --upgrade mlx-lm >> "$LOG" 2>&1
+pip show mlx-lm 2>/dev/null | grep -E 'Name|Version' >> "$LOG"
+deactivate
 
+# --- MLX Whisper (venv) ---
 source ~/.venvs/whisper/bin/activate
+pip show mlx-whisper 2>/dev/null | grep -E 'Name|Version' >> "$LOG"
 pip install --upgrade mlx-whisper >> "$LOG" 2>&1
+pip show mlx-whisper 2>/dev/null | grep -E 'Name|Version' >> "$LOG"
 deactivate
 
 npm update -g @anthropic-ai/claude-code >> "$LOG" 2>&1
@@ -720,6 +728,10 @@ npm update -g @anthropic-ai/claude-code >> "$LOG" 2>&1
   echo "Done."
 } >> "$LOG" 2>&1
 ```
+
+**Notes:**
+- Before/after version logging preserved for rollback decisions.
+- Each venv block is self-contained: activate → log → upgrade → log → deactivate.
 
 **Rollback guidance:**
 - Review `$LOG` before and after versions.
