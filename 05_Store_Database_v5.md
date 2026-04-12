@@ -688,14 +688,25 @@ Uses `~/.venvs/rag` for isolation, ChromaDB at `~/.local/share/rag/chroma`, and 
 - **Use Case:** ai-terminal | **OS:** macOS Apple Silicon only | **Risk:** 🟢 Green
 - **Command:**
   ```bash
-  pip3 install --user mlx-lm
+  # Install (one-time)
+  mkdir -p ~/.venvs
+  /opt/homebrew/bin/python3.12 -m venv ~/.venvs/mlx
+  source ~/.venvs/mlx/bin/activate
+  pip install --upgrade pip
+  pip install mlx-lm
+  python3 -c "import mlx.core as mx; print(mx.default_device())"  # Expected: Device(gpu, 0)
+  deactivate
+
+  # Inference
+  source ~/.venvs/mlx/bin/activate
   mlx_lm.generate \
     --model mlx-community/Llama-3.1-8B-Instruct-4bit \
     --prompt "Summarize key AI trends for Mac researchers in 2026:" \
     --max-tokens 512
+  deactivate
   ```
 - **Tested:** 2026-03-23 | macOS M4 | ✅ Verified
-- **Notes:** Faster than Ollama for single-shot tasks. Model downloads on first run.
+- **Notes:** Faster than Ollama for single-shot tasks. Model downloads on first run. Pins Python 3.12 — mlx-lm wheels may lag behind Homebrew’s latest Python. If `python3.12` is missing: `brew install python@3.12`
 
 ---
 

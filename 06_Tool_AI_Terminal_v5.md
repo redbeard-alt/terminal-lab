@@ -136,11 +136,18 @@ Add persistent exports to `~/.zshenv`, not `~/.zshrc`.
 ### Installation
 
 ```bash
-pip3 install --user mlx-lm
-python3 -c "import mlx.core as mx; print(mx.default_device())"
+mkdir -p ~/.venvs
+/opt/homebrew/bin/python3.12 -m venv ~/.venvs/mlx
+source ~/.venvs/mlx/bin/activate
+pip install --upgrade pip
+pip install mlx-lm
+python3 -c "import mlx.core as mx; print(mx.default_device())"  # Expected: Device(gpu, 0)
+deactivate
 ```
 
-Expected output: `Device(gpu, 0)`.
+**Notes:**
+- Pins Python 3.12 — mlx-lm wheels may lag behind Homebrew’s latest Python.
+- If `python3.12` is missing: `brew install python@3.12`
 
 ### Usage
 
