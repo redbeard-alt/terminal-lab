@@ -185,21 +185,44 @@ trap cleanup EXIT INT TERM      # Auto-cleanup on exit or interrupt
   
 ## Part 4: PACKAGE MANAGEMENT  
   
-| OS             | Manager   | Install                     | Update All                          |  
-|----------------|-----------|-----------------------------|-------------------------------------|  
-| macOS          | Homebrew  | `brew install pkg`          | `brew update && brew upgrade`       |  
-| Ubuntu/Debian  | apt       | `sudo apt install pkg`      | `sudo apt update && sudo apt upgrade` |  
-| Fedora/RHEL    | dnf       | `sudo dnf install pkg`      | `sudo dnf upgrade`                  |  
-| Python         | pip       | `pip3 install --user pkg`   | `pip3 install --upgrade --user pkg` |  
-| Node.js        | npm       | `npm install -g pkg`        | `npm update -g`                     |  
+| OS       | Manager   | Install                        | Update All                              |  
+|----------|-----------|--------------------------------|-----------------------------------------|  
+| macOS    | Homebrew  | `brew install pkg`             | `brew update && brew upgrade`           |  
+| Ubuntu   | apt       | `sudo apt install pkg`         | `sudo apt update && sudo apt upgrade`   |  
+| Fedora   | dnf       | `sudo dnf install pkg`         | `sudo dnf upgrade`                      |  
+| Python   | venv+pip  | see below                      | see below                               |  
+| Node.js  | npm       | `npm install -g pkg`           | `npm update -g`                         |  
   
-**macOS / PEP 668** — Homebrew Python blocks `pip3 install` system‑wide.  
+macOS PEP 668: Homebrew Python blocks global `pip3 install` system-wide.  
   
-Order of preference:  
+| Tier | Method | When | Example |  
+|------|--------|------|---------|  
+| 1 | `brew install` | System tools, runtimes | `brew install ffmpeg jq tesseract ollama pipx` |  
+| 2 | `pipx install` | Standalone CLI Python tools | `pipx install ruff`, `pipx install httpie` |  
+| 3 | `python3 -m venv` + `pip` | ML/AI stacks, project deps | mlx-lm, mlx-whisper, chromadb, torch |  
+| 4 | `pip3 install --user` | Last resort, one-off library | Breaks on `brew upgrade python` — avoid |  
+| ✕ | `--break-system-packages` | Never on Tahoe workstation | Throwaway containers only |  
   
-1. `pip3 install --user pkg` — 🟡 safest for one‑off tools.  
-2. `python3 -m venv ~/.venvs/tool && source ~/.venvs/tool/bin/activate` — 🟡 clean isolation.  
-3. `pip3 install --break-system-packages pkg` — 🔴 only for throwaway environments; avoid on Tahoe workstation.  
+```bash  
+# Tier 1 — system tools via brew  
+brew install ffmpeg jq pipx  
+  
+# Tier 2 — global CLI tools via pipx (brew install pipx first)  
+pipx install ruff  
+pipx install httpie  
+  
+# Tier 3 — ML/AI in dedicated venvs (preferred for all Python libraries)  
+python3 -m venv ~/.venvs/tool  
+source ~/.venvs/tool/bin/activate  
+pip install --upgrade pip  
+pip install <pkg>  
+deactivate  
+```  
+  
+Notes:  
+- Pin Python version for ML venvs if Homebrew upgrades break wheels:  
+  `/opt/homebrew/bin/python3.12 -m venv ~/.venvs/tool`  
+- `pip` inside an activated venv is always safe — PEP 668 only blocks global installs.  
   
 ---  
   
