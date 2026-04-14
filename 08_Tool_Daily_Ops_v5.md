@@ -287,7 +287,7 @@ ollama --version
 ollama serve  
 ```  
   
-Install MLX LM base tooling and verify device.    
+Install MLX-LM in a dedicated venv and verify device.    
 **Risk:** modifies state  
   
 ```bash  
@@ -296,13 +296,29 @@ mkdir -p ~/.venvs
 source ~/.venvs/mlx/bin/activate  
 pip install --upgrade pip  
 pip install mlx-lm  
-python3 -c "import mlx.core as mx; print(mx.default_device())"  # Expected: Device(gpu, 0)  
+python3 -c "import mlx.core as mx; print(mx.default_device())"  
 deactivate  
 ```  
   
+Create MLX shim (one-time):    
+**Risk:** modifies state  
+  
+```bash  
+mkdir -p ~/.local/bin  
+cat > ~/.local/bin/mlx8b << 'EOF'  
+#!/usr/bin/env bash  
+set -euo pipefail  
+~/.venvs/mlx/bin/python3 -m mlx_lm.generate \\  
+  --model mlx-community/Llama-3.1-8B-Instruct-4bit \\  
+  --max-tokens 512 --prompt "$@"  
+EOF  
+chmod +x ~/.local/bin/mlx8b  
+```  
+  
 **Notes:**  
-- Pins Python 3.12 — mlx-lm wheels may lag behind Homebrew’s latest Python.  
+- Pins Python 3.12 — mlx-lm wheels may lag behind Homebrew's latest Python.  
 - If `python3.12` is missing: `brew install python@3.12`  
+- Shim invokes venv python directly — no `source`/`deactivate` needed at the prompt.  
   
 Create a Whisper virtualenv and install MLX Whisper.    
 **Risk:** modifies state  
@@ -399,8 +415,8 @@ alias ai-stop-all-preview="ollama ps | tail -n +2 | awk '{print \$1}'"
 # Stop all running models (run preview first)  
 alias ai-stop-all="ai-stop-all-preview | xargs -r ollama stop"  
   
-# MLX quick call (ensure mlx-lm is installed)  
-alias mlx8b='mlxlm.generate --model mlx-community/Llama-3.1-8B-Instruct-4bit --max-tokens 512 --prompt'  
+# MLX uses shim at ~/.local/bin/mlx8b (see 2.3); no alias needed  
+export PATH="$HOME/.local/bin:$PATH"  
   
 # Claude Code  
 alias cc='claude'  
