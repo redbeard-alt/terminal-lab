@@ -155,13 +155,13 @@ Transcribe extracted audio with MLX Whisper to a text file.
   
 ```bash  
 source ~/.venvs/whisper/bin/activate  
-mlxwhisper cleaned_meeting.wav \  
+mlx_whisper cleaned_meeting.wav \  
   --model mlx-community/whisper-large-v3-mlx \  
   --language en  
 deactivate  
 ```  
   
-Summarize a transcript and extract structured action items with a local LLM.    
+Summarize a transcript
 **Risk:** read-only  
   
 ```bash  
@@ -446,13 +446,13 @@ Validate the Whisper pipeline (venv + ffmpeg).
 ffmpeg -ss 00:00:00 -t 01:00:00 -i meeting.mp4 \  
   -vn -ac 1 -ar 16000 cleaned_meeting.wav  
 source ~/.venvs/whisper/bin/activate  
-mlxwhisper cleaned_meeting.wav \  
+mlx_whisper cleaned_meeting.wav \  
   --model mlx-community/whisper-large-v3-mlx \  
   --language en  
 deactivate  
 ```  
   
-Check Claude Code Plan Mode from a small test repo.    
+Check Claude Code
 **Risk:** read-only if you stay in Plan Mode  
   
 ```bash  
