@@ -315,7 +315,7 @@ deactivate
 
 ### Full Batch Pipeline
 
-See `05_Store_Database.md` → Workflow **Local Board/Meeting Videos → Whisper Transcripts (MLX, macOS)**.
+See `05_Store_Database_v5.md` → Workflow **Local Board/Meeting Videos → Whisper Transcripts (MLX, macOS)**.
 
 ### Troubleshooting (Quick)
 
@@ -1644,4 +1644,4 @@ Baseline not found	Run ai-bench run then ai-bench set-baseline first
 
 ---
 
-*Last updated: April 2026 (v3.1) — Cross-reference: README.md, 00_Index_and_Router.md, 05_Store_Database.md*
+*Last updated: April 2026 (v3.1) — Cross-reference: README.md, 00_Index_Router_v5.md, 05_Store_Database_v5.md*

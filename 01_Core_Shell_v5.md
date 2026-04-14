@@ -264,9 +264,9 @@ For the full AI-terminal alias set, see **06_AI_Terminal Part 5**.
 If you keep Terminal Lab docs in `~/Terminal-Lab`, add these to section 6:
 
 ```bash
-alias t-core='cd ~/Terminal-Lab && bat 01_Core_Shell.md'
-alias t-store='cd ~/Terminal-Lab && bat 05_Store_Database.md'
-alias t-ai='cd ~/Terminal-Lab && bat 06_AI_Terminal.md'
+alias t-core='cd ~/Terminal-Lab && bat 01_Core_Shell_v5.md'
+alias t-store='cd ~/Terminal-Lab && bat 05_Store_Database_v5.md'
+alias t-ai='cd ~/Terminal-Lab && bat 06_Tool_AI_Terminal_v5.md'
 ```
 
 ---

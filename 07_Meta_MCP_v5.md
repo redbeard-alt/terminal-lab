@@ -25,7 +25,7 @@ Claude Code already has native git, bash, and file-editing tools. MCP adds **rea
 
 The "toxic combination" is `mcp-server-git` + `mcp-server-filesystem` together: chained, they enable RCE via prompt injection from a malicious README or poisoned commit message. Claude Code's built-in git tools (read-only diffs, status) are safer for daily use. Only add an external git MCP server if you have a concrete need and are pinned to `≥ 2025.12.18`.
 
-Route for git work: use Claude Code's native git tools + your `02_Core_Advanced.md` git section.
+Route for git work: use Claude Code's native git tools + your `02_Core_Advanced_v5.md` git section.
 
 ---
 
@@ -199,7 +199,7 @@ claude
 
 Expose vLLM-MLX or Ollama as a callable tool inside Claude Code sessions. Useful for: running eval comparisons, calling a local model for sub-tasks without leaving the session, routing cheaper tasks to local models.
 
-Prerequisite: vLLM-MLX or Ollama already running as a server (see `06_AI_Terminal.md` Parts 1, 8).
+Prerequisite: vLLM-MLX or Ollama already running as a server (see `06_Tool_AI_Terminal_v5.md` Parts 1, 8).
 
 ### 6.1 Minimal local-llm MCP server (Python)
 
@@ -361,7 +361,7 @@ jq . ~/.claude.json | head -80           # Validate config JSON
 
 ## Part 10 — 05_Store Entries
 
-For each server you rely on in production, add a `05_Store_Database.md` entry under `ai-terminal`:
+For each server you rely on in production, add a `05_Store_Database_v5.md` entry under `ai-terminal`:
 
 ```
 ### Claude MCP — baseline stack (server-fetch + server-filesystem + context7)
@@ -379,14 +379,14 @@ For each server you rely on in production, add a `05_Store_Database.md` entry un
 
 | Query | Go to |
 |---|---|
-| MCP concepts, install, configure, troubleshoot | This file `07_MCP.md` |
-| Claude Code Plan Mode, hooks, sandbox, budget | `06_AI_Terminal.md` Part 3 |
-| Building custom Python/bash scripts | `02_Core_Advanced.md` scripting sections |
-| Battle-tested MCP stack commands | `05_Store_Database.md` → `ai-terminal` category |
-| vLLM-MLX / Ollama server setup (prerequisite for Part 6) | `06_AI_Terminal.md` Parts 1, 8 |
-| RAG pipeline using Ollama embeddings | `06_AI_Terminal.md` Part 13 (when added) |
+| MCP concepts, install, configure, troubleshoot | This file `07_Meta_MCP_v5.md` |
+| Claude Code Plan Mode, hooks, sandbox, budget | `06_Tool_AI_Terminal_v5.md` Part 3 |
+| Building custom Python/bash scripts | `02_Core_Advanced_v5.md` scripting sections |
+| Battle-tested MCP stack commands | `05_Store_Database_v5.md` → `ai-terminal` category |
+| vLLM-MLX / Ollama server setup (prerequisite for Part 6) | `06_Tool_AI_Terminal_v5.md` Parts 1, 8 |
+| RAG pipeline using Ollama embeddings | `06_Tool_AI_Terminal_v5.md` Part 13 (when added) |
 
-Update `00_Index_and_Router.md` and `README.md` to reference `07_MCP.md` as the MCP / Claude tool stack doc.
+Update `00_Index_Router_v5.md` and `README.md` to reference `07_Meta_MCP_v5.md` as the MCP / Claude tool stack doc.
 
 ---
 

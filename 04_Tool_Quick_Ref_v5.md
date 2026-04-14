@@ -254,7 +254,7 @@ deactivate
 ```  
   
 PEP 668: Homebrew Python blocks global `pip3 install`.  
-Use venvs for libraries, pipx for CLI tools. See `02_Core_Advanced.md` Part 4.  
+Use venvs for libraries, pipx for CLI tools. See `02_Core_Advanced_v5.md` Part 4.  
   
 ---  
   
