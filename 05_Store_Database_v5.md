@@ -81,7 +81,7 @@
   ```
 - **What it does:** Reads all pages from existing merged PDF + new source PDF, combines, overwrites in place
 - **Tested:** 2026-03-23 | ✅ Verified
-- **Notes:** `"Ignoring wrong pointing object"` warnings are harmless. Install: `pip3 install --user pypdf`
+- **Notes:** `"Ignoring wrong pointing object"` warnings are harmless. Install in a venv: `pip install pypdf`
 
 ---
 
@@ -865,7 +865,7 @@ brew bundle check --file=~/Brewfile                 # Check for drift
 | 2026-03-23 | grep error count | macOS | ✅ Pass | |
 | 2026-03-23 | Bulk rename 384 PDFs via Python dict map | macOS zsh | ✅ Pass | --dry-run + manifest verified |
 | 2026-03-23 | Append PDF to existing merged (pypdf) | macOS zsh | ✅ Pass | Harmless warnings confirmed |
-| 2026-03-23 | pip3 install --user pypdf | macOS zsh | ✅ Pass | PEP 668 resolved |
+| 2026-03-23 | venv pip install pypdf | macOS zsh | ✅ Pass | PEP 668 resolved |
 | 2026-03-23 | ollama ps / stop | macOS zsh | ✅ Pass | RAM freed |
 | 2026-03-23 | cat file pipe to ollama | macOS zsh | ✅ Pass | llama3.1:8b + qwen2.5:14b |
 | 2026-03-23 | git init research vault | macOS zsh | ✅ Pass | .gitignore verified |

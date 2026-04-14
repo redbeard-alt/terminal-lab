@@ -174,7 +174,8 @@ curl -s http://localhost:8080/v1/chat/completions \
 ### Fine-Tuning on Apple Silicon (LoRA)
 
 ```bash
-pip3 install --user 'mlx-lm[training]'
+source ~/.venvs/mlx/bin/activate
+pip install 'mlx-lm[training]'
 
 mlx_lm.lora \
   --model mlx-community/Llama-3.1-8B-Instruct-4bit \
@@ -186,6 +187,8 @@ mlx_lm.fuse \
   --model mlx-community/Llama-3.1-8B-Instruct-4bit \
   --adapter-path ./adapters \
   --save-path ./my-finetuned-model
+
+deactivate
 ```
 
 ### Recommended 4-bit Models for M4 (48 GB)
@@ -1203,7 +1206,11 @@ Goal: One OpenAI-compatible server that handles text + image (+ video/audio) usi
 🟡 modifies state
 
 bash
-pip3 install --user vllm-mlx
+mkdir -p ~/.venvs
+python3 -m venv ~/.venvs/vllm-mlx
+source ~/.venvs/vllm-mlx/bin/activate
+pip install --upgrade pip
+pip install vllm-mlx
 
 # Start server with Qwen2-VL for multimodal API
 vllm serve mlx-community/Qwen2-VL-2B-Instruct-4bit \
