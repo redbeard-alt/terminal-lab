@@ -128,6 +128,7 @@ Query: Creating, scaffolding, or managing Perplexity Spaces from the terminal
 |---|---|
 | MCP concepts, install, configure, troubleshoot | `07_Meta_MCP_v5.md` |
 | Claude Code Plan Mode, hooks, sandbox, budget caps | `06_Tool_AI_Terminal_v5.md` Part 3 |
+| Claude Code sub-agents, skills, orchestration | `06b_Claude_Code_Advanced.md` |
 | Building custom Python MCP servers | `07_Meta_MCP_v5.md` Part 7 + `02_Core_Advanced_v5.md` scripting |
 | Battle-tested MCP stack commands | `05_Store_Database_v5.md` → `ai-terminal` |
 | vLLM-MLX / Ollama server setup (prereq for local-LLM MCP) | `06_Tool_AI_Terminal_v5.md` Parts 1, 8 |
@@ -211,23 +212,5 @@ The rule of thumb: if it's new or destructive, route through `03_Tool_Command_Bu
 ---
 
 > **NOTE:** Syntax standards, post-output protocol, and behavioral directives live in **Space Instructions** — not in this file. This file is for navigation only.
-
----
-
-## ASSISTANT ROUTER DIRECTIVE
-
-Before answering any user query in this Space:
-
-1. Run the **"WHAT ARE YOU BUILDING?"** decision tree above.
-2. Decide: **Standard LLM** vs **Agentic / Perplexity Computer**.
-3. Route yourself to the matching files:
-   - Standard LLM: `01_Core`, `03_Tool` (Template A), `04_Tool`.
-   - Agentic / Computer: `02_Core`, `03_Tool` (Template B), `04_Tool`.
-4. If the query is about **Prompt Lab itself** (meta, audits, taxonomy, space design), also consult `05_Store` and `map-shortcut-updated.md`.
-5. Combine this router with the **Space Instructions**. On conflict, Space Instructions define behavior; this file defines routing.
-
-Treat this routing as mandatory, not optional.
-
----
 
 *Last updated: April 2026 | v5*

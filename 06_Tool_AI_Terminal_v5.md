@@ -490,6 +490,8 @@ git -C ~/Research diff
 git -C ~/Research status
 ```
 
+> For sub-agents, skills, and orchestration → see `06b_Claude_Code_Advanced.md`.
+
 ---
 
 ## Local Model Operator Doctrine
