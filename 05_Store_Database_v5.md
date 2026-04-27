@@ -804,6 +804,75 @@
 
 ---
 
+### zsh-ai-assist — Shell Syntax Lookup
+- Use Case: ai-terminal
+- OS: macOS (cloud-backed — non-sensitive prompts only)
+- Risk: 🟢 read-only (suggests commands, you approve before running)
+- Commands:
+
+```bash
+# Shell flag or syntax question
+?? sort a TSV file by column 3 descending
+?? jq flag to suppress color output
+?? zsh glob to match .md files modified in the last 7 days
+?? macOS find equivalent for fd with maxdepth 2
+
+# One-liner construction
+ai "one-liner to count unique values in column 2 of a CSV"
+ai "macOS zsh: one-liner to rename all .jpeg files to .jpg in current dir"
+
+# Pipeline explanation (safe — no local paths)
+ai "explain: cat file.txt | awk '{print $2}' | sort | uniq -c | sort -rn"
+```
+
+- What it does: Sends prompt to cloud model API, returns a shell command or explanation, inserts into prompt for review before running.
+- Tested: 2026-04-27 Verified
+- Notes: Cloud-backed — never include local paths, filenames, or internal context in prompts. Use Ollama for file Q&A instead.
+
+---
+
+### zsh-ai-assist — macOS-Specific One-liners
+- Use Case: ai-terminal
+- OS: macOS Tahoe / Apple Silicon (cloud-backed — non-sensitive prompts only)
+- Risk: 🟢 read-only (review before running)
+- Commands:
+
+```bash
+# Always prefix with platform context for accurate output
+?? macOS Tahoe zsh: list all processes using more than 1GB RAM
+?? macOS zsh: check if a port is in use and show the process
+?? macOS zsh: convert all .wav files in current dir to .mp3 using ffmpeg
+?? macOS zsh: show disk usage for each subdirectory sorted by size
+?? macOS zsh: create a launchd plist to run a script every hour
+```
+
+- What it does: Generates macOS/zsh-specific one-liners with correct flags for BSD tools (not GNU). Prefixing with "macOS Tahoe zsh:" avoids Linux-flavored output.
+- Tested: 2026-04-27 Verified
+- Notes: Review all suggested commands before running. BSD flag syntax differs from GNU — always verify on macOS. Never paste internal paths into the prompt.
+
+---
+
+### zsh-ai-assist vs Ollama — Decision Gate
+- Use Case: ai-terminal
+- OS: macOS
+- Risk: 🟢 read-only (decision reference)
+- Decision table:
+
+| Prompt contains | Use | Reason |
+|---|---|---|
+| Generic shell syntax question | zsh-ai-assist (`??`) | Fast, accurate, no sensitive data |
+| Local file path or filename | Ollama (`cat file \| ollama run ...`) | On-device, safe |
+| Internal project name or context | Ollama | Cloud-backed tools must not see internal context |
+| Sensitive data or credentials | Ollama ONLY | Never send to cloud |
+| Multi-step workflow | Claude Code + Plan Mode | Better context, approvable steps |
+| Quick pipeline explanation (public command) | zsh-ai-assist (`ai "explain..."`) | Fine if no internal context |
+
+- Gate rule: If in doubt, use Ollama. It costs 0 tokens and stays on-device.
+- Tested: 2026-04-27 Verified
+- Notes: Pin this entry. Run this decision before every zsh-ai-assist use.
+
+---
+
 ### MLX Inference (Apple Silicon)
 - **Use Case:** ai-terminal | **OS:** macOS Apple Silicon only | **Risk:** 🟢 Green
 - **Command:**

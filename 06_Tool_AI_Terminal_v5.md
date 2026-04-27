@@ -569,6 +569,55 @@ Never pipe credentials, SSH keys, tokens, or `.zshenv` contents to **any** model
 | Wrong API key | Check env vars in `~/.zshenv` |
 | Slow response | API latency or provider issue |
 
+### 4a — Operator Doctrine for zsh-ai-assist
+
+zsh-ai-assist is **cloud-backed** — your prompt and shell context are sent to the configured model API. Apply these rules every session:
+
+- **Never use `ai "..."` or `??` on prompts that reference local file paths, project names, credentials, or any internal context.** Keep prompts generic and task-focused.
+- **Never pipe file contents into zsh-ai-assist.** Use Ollama for file Q&A instead — it stays on-device.
+- **Review every suggested command before pressing Enter.** zsh-ai-assist outputs raw shell commands. Treat them like code from a stranger — read before running.
+- **Use for shell syntax, not logic.** Best for: "how do I sort by column 3", "what flag disables color output in jq", "zsh glob to match files modified today". Not for: multi-step workflows, file transforms, or anything touching production data.
+- **Cloud = no sensitive data.** This is Tier 2 (cloud-backed). Same rule as Claude Code CLI — non-sensitive prompts only.
+
+### 4b — Best use patterns
+
+```bash
+# Shell syntax lookup — ideal use case
+?? sort a TSV file by column 3 descending
+
+# Flag lookup
+?? jq flag to suppress color output
+
+# Glob pattern help
+?? zsh glob to match .md files modified in the last 7 days
+
+# One-liner construction
+ai "one-liner to find duplicate lines in a file and count occurrences"
+
+# Pipe inspection help
+ai "explain what this does: cat file.txt | awk '{print $2}' | sort | uniq -c"
+```
+
+### 4c — What to use instead (decision table)
+
+| Task | Use instead of zsh-ai-assist | Why |
+|---|---|---|
+| File Q&A / summarize a local file | `cat file | ollama run llama3.1:8b "..."` | On-device, safe for sensitive data |
+| Multi-step workflow generation | Claude Code with Plan Mode | Better context, approvable steps |
+| Script with error handling | `03_Tool_Command_Builder_Templates_v5.md` Template B | Structured output, hardened by default |
+| Explain a complex pipeline | `ai "explain..."` is fine for public commands | Only if no internal paths/data in prompt |
+| RAG over notes | `rag ask "..."` (local RAG pipeline) | On-device, full vault context |
+
+### 4d — Troubleshooting
+
+| Problem | Fix |
+|---|---|
+| `??` returns nothing or hangs | Check `echo $ZSH_AI_ASSIST_API_KEY` — must be set in `.zshenv` |
+| Suggested command has wrong flags for macOS | Specify "macOS Tahoe, zsh" in the prompt: `?? macOS zsh glob for files modified today` |
+| Command inserts but doesn't run | Press Enter after insertion to execute; press Ctrl+C to discard |
+| Output is Linux-flavored | Prefix prompt with "macOS Apple Silicon zsh:" |
+| Rate limit errors | Switch model or wait — check `$ZSH_AI_ASSIST_MODEL` is set to a fast model |
+
 ---
 
 ## PART 5: RECOMMENDED .zshrc ALIASES
