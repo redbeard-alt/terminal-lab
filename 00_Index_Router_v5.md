@@ -5,6 +5,22 @@
 
 ---
 
+## Quick Trigger Commands
+
+| Trigger | Routes To | Behavior |
+|---|---|---|
+| ROUTE SHELL | 01_Core_Shell_v5.md | Use shell fundamentals, safety patterns, .zshrc guidance |
+| ROUTE ADVANCED | 02_Core_Advanced_v5.md | Use scripting, automation, SSH, Docker, tmux, launchd |
+| ROUTE STORE | 05_Store_Database_v5.md | Pull battle-tested commands; skip fresh invention |
+| ROUTE AI-TERMINAL | 06_Tool_AI_Terminal_v5.md | Use Ollama, MLX, Claude Code, zsh-ai-assist patterns |
+| ROUTE MCP | 07_Meta_MCP_v5.md | Use MCP server stack concepts, install, configure, troubleshoot |
+| SAFETY FLOW | (no file route) | Re-wrap the last answer into: EXPLAIN → DRY-RUN → RED TEAM → HARDEN → SCRIPT-IT → SAVE → CHAIN |
+| SAVE COMMAND slug | 05_Store_Database_v5.md | Extract the last proposed command/script, format it as a ready-to-paste 05_Store entry (category, risk, dry-run/live variants, macOS Tahoe M4 context, notes), and output it |
+
+> For HAND OFF, RED TEAM, and FIX triggers, see 00_Quick_Commands_Universal.md.
+
+---
+
 ## Files
 
 - `01_Core_Shell_v5.md` – Shell fundamentals, safety patterns, `.zshrc`.
