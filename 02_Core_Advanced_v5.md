@@ -481,4 +481,74 @@ set -g base-index 1          # Windows start at 1 not 0
   
 ---  
   
-*Last updated: April 2026 (v4)*  
+*Last updated: April 2026 (v4)*
+
+## Safety Additions — April 2026
+
+### xargs safety defaults
+
+Always use `-I{}` with explicit substitution and `--` to terminate option parsing. Never use bare `xargs rm` or `xargs mv`.
+
+```bash
+# WRONG — pipes straight into rm, no preview possible
+find . -name '*.tmp' | xargs rm
+
+# RIGHT — preview first
+find . -name '*.tmp' | xargs -I{} echo "WOULD DELETE: {}"
+# Then live:
+find . -name '*.tmp' | xargs -I{} rm -- "{}"
+```
+
+For multi-arg commands, use `-P 1` to disable parallelism unless you explicitly need it:
+
+```bash
+cat file-list.txt | xargs -I{} -P 1 cp -- "{}" ~/Backup/
+```
+
+### find safety rule
+
+Never combine `-exec rm` or `-exec mv` without a dry-run pass. Pattern:
+
+```bash
+# DRY RUN — print only
+find ~/Projects -name '*.bak' -mtime +30 -print
+
+# LIVE — only after confirming dry-run output
+find ~/Projects -name '*.bak' -mtime +30 -delete
+```
+
+Always add `-maxdepth N` to limit scope when searching under a project root.
+
+### SSH scope control
+
+Never run write commands over SSH without first confirming the remote path exists and is correct:
+
+```bash
+# Confirm remote path before any write
+ssh user@host 'ls -la /target/path/'
+
+# Then write
+rsync -av --dry-run ./local/ user@host:/target/path/   # dry-run first
+rsync -av ./local/ user@host:/target/path/             # live after confirming
+```
+
+Never store SSH keys in project directories or pipe them to any model or service.
+
+### Docker scope control
+
+Never use `docker system prune` without the `-f --filter` flags to scope what gets removed:
+
+```bash
+# WRONG — removes everything
+docker system prune -af
+
+# RIGHT — scope to dangling images only, dry-run via list first
+docker images -f 'dangling=true'           # preview
+docker image prune -f                       # only dangling images
+
+# RIGHT — scope to containers stopped >24h
+docker ps -a --filter 'status=exited'      # preview
+docker container prune -f --filter 'until=24h'
+```
+
+Never mount `~`, `/`, or credential directories (`~/.ssh`, `~/.gnupg`) as Docker volumes.  

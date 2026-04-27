@@ -271,3 +271,42 @@ find "$LOG_DIR" -type f -mtime +30 -delete
 ---
 
 *Last updated: April 2026 (v4)*
+
+## Safety Additions — April 2026
+
+### Secrets hygiene — non-negotiable rules
+
+1. **Never paste API keys, tokens, or passwords into a shell prompt, task file, or model session.** Store in `.zshenv` and reference via `$VAR_NAME`.
+2. **Never `cat` or `echo` a secrets file** (`~/.zshenv`, `.env`, `~/.ssh/id_*`, `~/.aws/credentials`) into any model or pipeline.
+3. **Never include secrets in git commits.** Run `git diff --cached` before every commit and scan for key patterns.
+4. **Use `--env-file` or environment variable injection** for Docker and scripts that need credentials at runtime.
+5. **Rotate any key that touches shell history.** If you accidentally ran `echo $MY_API_KEY`, treat it as compromised.
+
+### Secrets pre-commit scan (fast)
+
+Run before every commit touching config, env, or script files:
+
+```bash
+# Scan staged files for common secret patterns
+git diff --cached | rg -i \
+  '(api.?key|secret|token|password|passwd|auth|bearer|sk-|ghp_|xox[baprs]-)[^\s]{8,}'
+
+# If anything matches, do NOT commit — rotate the credential first
+```
+
+### Agentic session gates
+
+For any Claude Code session that writes, transforms, or deletes files:
+
+| Gate | When | Command |
+|---|---|---|
+| RAM check | Before session | `mactop` — must be below yellow |
+| Plan Mode | Before any edits | `Shift+Tab` in claude session |
+| Scope file | Before session | Write `/tmp/task.md` with explicit in-scope paths |
+| Budget cap | Sessions >15 min | `claude --max-budget-usd 10.00` |
+| Sandbox | External/untrusted input | `claude --sandbox` |
+| Diff review | After session | `git diff --stat && git diff` |
+| Output verify | After batch writes | `ls -lht <output-dir> | head -10` |
+| Rollback ready | Before session | Ensure clean `git status` so rollback is one command |
+
+Never start an agentic session on a repo with uncommitted changes — you lose your rollback point.
