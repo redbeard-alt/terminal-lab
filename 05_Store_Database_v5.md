@@ -595,14 +595,78 @@
 - **Use Case:** ai-terminal | **OS:** macOS | **Risk:** 🟢 Green (data stays local)
 - **Command:**
   ```bash
-  cat research_notes.md | ollama run llama3.1:8b "Summarize in 5 bullet points:"
-  cat meeting_notes.txt | ollama run llama3.1:8b "Extract all action items and owners:"
+  # RAM check first
+  mactop   # must be below yellow
+  ollama ps
+
+  # Model selection:
+  # Small file / quick Q&A  → llama3.1:8b
+  # Long doc / synthesis    → qwen2.5:14b
+  # JSON / structured output → qwen2.5:14b
+
+  # Pipe file to model
+  cat notes.md | ollama run llama3.1:8b "Summarize in 5 bullet points"
+  cat meeting.txt | ollama run qwen2.5:14b "Extract all action items and owners"
   cat data.csv | ollama run qwen2.5:14b "What are the 3 most significant patterns?"
+
+  # Multi-file
   cat file1.md file2.md | ollama run qwen2.5:14b "What are the biggest contradictions?"
-  cat report.md | ollama run llama3.1:8b "Write an executive summary:" > exec_summary.md
+
+  # Save output
+  cat report.md | ollama run llama3.1:8b "Write an executive summary" > exec-summary.md
+
+  # Free RAM when done
+  ollama stop llama3.1:8b
   ```
-- **Tested:** 2026-03-23 | ✅ Verified
-- **Notes:** Use qwen2.5:14b for long docs (>10k tokens). Requires 24GB+ RAM.
+- **What it does:** Pipes local files to an on-device Ollama model for summarization, extraction, or Q&A. All data stays local. Model choice depends on file size and task complexity.
+- **Tested:** 2026-04-27 | ✅ Verified
+- **Notes:** Run mactop before loading. Use qwen2.5:14b for docs >10k tokens — llama3.1:8b degrades on long context. Always stop the model when done.
+
+---
+
+### Batch Transcription — MLX Whisper (macOS Apple Silicon)
+- **Use Case:** ai-terminal | **OS:** macOS Apple Silicon only | **Risk:** 🟡 Yellow (writes transcript files)
+- **Command:**
+  ```bash
+  # Activate venv
+  source ~/.venvs/whisper/bin/activate
+
+  # RAM check
+  mactop   # must be below yellow before loading Whisper
+
+  # Dry-run first — preview what will be processed, no files written
+  PROJECTROOT="/path/to/meeting-videos"   # change to your folder
+  for inpath in "$PROJECTROOT"/*.mp4 "$PROJECTROOT"/*.flv; do
+    [ -e "$inpath" ] || continue
+    stem=$(basename "${inpath%.*}")
+    echo "WOULD PROCESS: $inpath"
+    echo "  → cleaned WAV: $PROJECTROOT/cleaned/${stem}.cleaned.wav"
+    echo "  → transcript:  $PROJECTROOT/transcripts/${stem}.large-v3.txt"
+  done
+  echo "DRY RUN COMPLETE — no files written."
+
+  # Live run (after confirming dry-run output)
+  mkdir -p "$PROJECTROOT/cleaned" "$PROJECTROOT/transcripts"
+  for inpath in "$PROJECTROOT"/*.mp4 "$PROJECTROOT"/*.flv; do
+    [ -e "$inpath" ] || continue
+    stem=$(basename "${inpath%.*}")
+    cleaned="$PROJECTROOT/cleaned/${stem}.cleaned.wav"
+    outtxt="$PROJECTROOT/transcripts/${stem}.large-v3.txt"
+    [ -f "$outtxt" ] && [ $(wc -w < "$outtxt") -gt 50 ] && continue   # skip if good transcript exists
+    ffmpeg -i "$inpath" -vn -ac 1 -ar 16000 \
+      -af "afftdn=nr=25,loudnorm=I=-16:TP=-1.5:LRA=11,highpass=f=80" \
+      "$cleaned" -y
+    mlx_whisper "$cleaned" \
+      --model mlx-community/whisper-large-v3-mlx \
+      --language en \
+      --output-dir "$PROJECTROOT/transcripts"
+  done
+
+  deactivate
+  ```
+- **What it does:** Batch transcribes meeting videos to text using MLX Whisper on Apple Silicon. Cleans audio with ffmpeg first. Skips files that already have a good transcript (>50 words). Dry-run previews all actions before writing.
+- **Tested:** 2026-04-03 | ✅ Verified M4 48GB
+- **Notes:** Run mactop first — peak RAM ~3GB. Known-good combo: mlx-whisper latest, ffmpeg Homebrew, model mlx-community/whisper-large-v3-mlx. Always dry-run first.
 
 ### Image → Text with Local VLM (MLX-VLM)
 
@@ -623,49 +687,40 @@
 
 ---
 
---- 
-TITLE TERMINAL LAB COMMAND DATABASE v4 - AI-TERMINAL - Local RAG over Research Vault (Ollama + ChromaDB)
+### Local RAG Query (Ollama + ChromaDB)
+- **Use Case:** ai-terminal | **OS:** macOS | **Risk:** 🟡 Yellow (re-embeds on refresh, review before running)
+- **Command:**
+  ```bash
+  # Activate RAG venv
+  source ~/.venvs/rag/bin/activate
 
-- Use Case ai-terminal
-- OS macOS
-- Risk Yellow re-embeds content, review before running
+  # RAM check
+  mactop   # must be below yellow
 
-- Command
-```bash
-# One-time setup
-mkdir -p ~/.venvs
-python3 -m venv ~/.venvs/rag
-source ~/.venvs/rag/bin/activate
-pip install --upgrade pip
-pip install chromadb ollama
-deactivate
+  # Incremental ingest (only re-embeds changed files)
+  rag-refresh --yes
 
-# Script location and wrapper
-mkdir -p ~/scripts ~/.local/bin
-# (rag.py in ~/scripts, wrapper in ~/.local/bin/rag — see 06_AI_Terminal Part X)
+  # Query the vault
+  rag ask "Summarize the main upgrade ideas for Terminal Lab."
+  rag ask "What safety rules does Terminal Lab enforce?"
+  rag ask "What is the current status of the SVVSD board meeting pipeline?"
 
-# Ingest + refresh (incremental)
-rag-refresh --yes          # preview + auto-ingest, or:
-rag ingest                 # run ingest directly
+  # Use a faster/lighter model for quick queries
+  RAGMODEL=llama3.1:8b rag ask "Quick summary of last session notes."
 
-# Full rebuild of the index
-rag ingest --full
+  # Full index rebuild (only if embeddings are stale or corrupted)
+  rag ingest --full
 
-# Query the vault
-rag ask "Summarize the main upgrade ideas for Terminal Lab."
-rag ask "What safety rules does Terminal Lab enforce?"
+  deactivate
 
-# Switch answer model (default is qwen2.5:14b)
-RAG_MODEL=llama3.1:8b rag ask "quick summary"
-```
+  # Free RAM when done
+  ollama stop qwen2.5:14b
+  ollama stop nomic-embed-text
+  ```
+- **What it does:** Queries the local Research vault using a fully on-device RAG pipeline. Chunks and embeds .md/.txt files with nomic-embed-text via Ollama, stores vectors in ChromaDB at ~/.local/share/rag/chroma, answers with qwen2.5:14b by default. Hash manifest at ~/.local/share/rag/hashes.json ensures only changed files are re-embedded.
+- **Tested:** 2026-04-03 | ✅ Verified M4 48GB
+- **Notes:** Uses .venvs/rag for isolation. RAGMODEL env var swaps answer model without editing scripts. Run rag-refresh before querying after any new notes. Stop both models when done — nomic-embed-text also holds RAM.
 
-- What it does  
-Builds a fully local RAG pipeline over `~/Research`: chunks `.md` and `.txt` files, embeds with `nomic-embed-text` via Ollama, stores vectors in ChromaDB, and answers questions with a local chat model (`qwen2.5:14b` by default).
-
-- Tested 2026-04-03 Verified
-
-- Notes  
-Uses `~/.venvs/rag` for isolation, ChromaDB at `~/.local/share/rag/chroma`, and a hash manifest at `~/.local/share/rag/hashes.json` to only re-embed changed files. `rag-refresh --yes` prints candidate files and stats, then runs incremental ingest. `RAG_MODEL` env var lets you swap answer models without editing the script.
 ---
 
 ### Claude Code Research Synthesis
