@@ -458,6 +458,37 @@ git -C ~/Research status
 
 ---
 
+## Local Model Operator Doctrine
+
+- **RAM first, always.** Run `mactop` or check `ollama ps` before loading any model. If RAM pressure is yellow or above, stop running models before starting a new one.
+- **Free RAM when done.** Run `ollama stop <model>` after every session — models hold RAM indefinitely until explicitly stopped.
+- **Right model for the job** (see model-selection table below).
+- **Venv discipline.** Each tool stack lives in its own venv: `.venvs/whisper`, `.venvs/rag`, `.venvs/vlm312`. Never mix deps across venvs.
+- **Local = safe for sensitive data.** Ollama and MLX are on-device. Claude Code CLI and zsh-ai-assist are cloud-backed — never pipe sensitive files to them.
+
+| Task | Recommended model | Approx RAM | Notes |
+|---|---|---|---|
+| Quick summary / Q&A on small file (<10k tokens) | llama3.1:8b | ~6GB | Fast, low RAM |
+| Long doc / complex synthesis (>10k tokens) | qwen2.5:14b | ~12GB | Needs 24GB total RAM free |
+| Structured output / JSON extraction | qwen2.5:14b | ~12GB | Better instruction following |
+| Embeddings for RAG | nomic-embed-text | ~1GB | Pair with any chat model for answers |
+| Batch transcription | MLX Whisper whisper-large-v3-mlx | ~3GB peak | Apple Silicon only, .venvs/whisper |
+| Image / screenshot OCR | Qwen2-VL-2B-Instruct-4bit (mlx-vlm) | ~2.5GB | .venvs/vlm312, use when tesseract struggles |
+
+**RAM check pattern (run before any model load):**
+```bash
+mactop          # visual RAM pressure — must be below yellow
+ollama ps       # see what is already loaded
+ollama stop <model>   # free RAM from idle models
+```
+
+**Session close pattern:**
+```bash
+ollama ps | tail -n +2 | awk '{print $1}' | xargs -I{} ollama stop {}
+```
+
+---
+
 ## PART 4: ZSH-AI-ASSIST — AI AT THE PROMPT
 
 ### Installation
