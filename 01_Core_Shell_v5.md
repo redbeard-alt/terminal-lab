@@ -365,3 +365,43 @@ Never pipe secrets, SSH keys, or `.zshenv` contents into any model, local or clo
 ---
 
 *Last updated: April 2026 (v4)*
+
+## Safety Additions — April 2026
+
+### Dry-run gates for destructive one-liners
+
+Before any `rm`, `find -delete`, `mv` (bulk), or `sed -i` targeting more than one file, always run the read-only equivalent first.
+
+| Destructive | Safe preview first |
+|---|---|
+| `rm *.log` | `ls *.log` or `echo *.log` |
+| `find . -name '*.tmp' -delete` | `find . -name '*.tmp'` (no -delete) |
+| `mv src/* dst/` | `ls src/` then `echo "mv src/* dst/"` |
+| `sed -i 's/old/new/g' *.md` | `grep -n 'old' *.md` first, then `perl -0pi` with backup |
+| `git clean -fd` | `git clean -fdn` (dry-run flag) first |
+
+### Glob scope rule
+
+Never use `**/*`, `~/`, or `/` as the target of a write or delete operation. Always scope to a named subdirectory:
+
+```bash
+# WRONG
+rm -rf ~/
+find / -name '*.bak' -delete
+
+# RIGHT
+rm -rf ~/Projects/myproject/tmp/
+find ~/Projects/myproject -name '*.bak'
+```
+
+### set -euo pipefail for every script
+
+Every shell script that writes, moves, or deletes files must begin with:
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+trap 'echo "ERROR at line $LINENO — exiting" >&2' ERR
+```
+
+`set -e`: exit on first error. `set -u`: error on undefined variable. `set -o pipefail`: catch failures inside pipes. The `trap` prints the line number so you can find the failure fast.

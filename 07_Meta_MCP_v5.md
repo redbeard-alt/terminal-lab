@@ -331,6 +331,41 @@ Before adding filesystem server to a scope, verify:
 - **Treat API keys for MCP servers like any other credential**: store in `.zshenv`, inject via `${VAR}` syntax, never paste inline into shell history.
 - **Prompt injection surface**: any content Claude reads (READMEs, issue descriptions, fetched URLs) can carry injected instructions. This is especially dangerous with filesystem + git active together.
 
+### 8.4 Prompt injection defence
+
+MCP dramatically increases prompt injection surface because Claude now reads external content (fetched URLs, filesystem files, scraped docs) as part of its context. Treat all externally-sourced content as potentially hostile.
+
+**Rules:**
+- Enable `--sandbox` any time Claude will fetch external URLs or read files from outside your trusted project roots.
+- Never allow filesystem MCP roots to include directories that contain content from untrusted sources (e.g., a `Downloads/` folder, a cloned repo you haven't reviewed).
+- If a Claude session behaves unexpectedly after reading external content, terminate immediately, `git diff`, and roll back before re-running.
+- Review `~/.claude.json` after any session that involved external content — injected instructions can attempt to add new MCP servers or change config.
+
+**Fast post-session audit:**
+
+```bash
+# Check claude config wasn't modified
+git diff ~/.claude.json 2>/dev/null || echo "Not tracked — diff manually"
+
+# Scan fetched content for injection patterns
+rg -i '(ignore previous|disregard instructions|new task:|system prompt|you are now)' \
+  ~/Research/Fetched/ 2>/dev/null | head -20
+```
+
+### 8.5 MCP server update hygiene
+
+MCP servers installed via `npx` or `uvx` auto-update silently unless pinned. Pin versions in production:
+
+```bash
+# WRONG — always pulls latest, may introduce breaking changes or malicious updates
+npx -y @modelcontextprotocol/server-filesystem
+
+# RIGHT — pin to a reviewed version
+npx -y @modelcontextprotocol/server-filesystem@1.2.0
+```
+
+Review changelogs before unpinning. Treat MCP server updates like dependency updates — review, don't auto-accept.
+
 ---
 
 ## Part 9 — Troubleshooting
