@@ -436,6 +436,40 @@ description: Use when reviewing research notes, analyzing claims, or cross-refer
 EOF
 ```
 
+### Claude Code Operator Doctrine
+
+- Start with one main agent. Add teammates only after a workflow is already reliable.
+- Always use Shift+Tab (Plan Mode) before any file-writing or multi-file task.
+- Do NOT solve reliability with giant CLAUDE.md or system prompts. Prefer small `.claude-skills-*.md` skill descriptions, hooks, git review, and explicit task scope.
+- Treat every successful Claude Code session as a workflow template: run manually first, then convert the proven sequence into a `.claude-skills-*.md` skill or a script in `scripts/`.
+- After every write session, review with `git diff` and `git status` before accepting the result.
+- When Claude fails, capture the failure, correct the workflow, and update the skill file so the error is less likely next time (recursive hardening).
+
+**Standard code-edit session pattern:**
+1. `cd <project-root> && claude`
+2. Shift+Tab → Plan Mode
+3. Ask Claude to inspect the repo, propose a todo list, and wait for approval before editing any files.
+4. Approve or prune the plan.
+5. Let Claude apply the smallest useful change set.
+6. Review: `git diff` and `git status`
+7. If the run was successful and repeatable, promote it: ask Claude to summarize the workflow as a `.claude-skills-*.md` skill (name + description + numbered steps).
+
+**Research synthesis pattern:**
+1. `cd Research && claude`
+2. Shift+Tab → Plan Mode
+3. Ask Claude to list candidate files in the target folder before reading. You approve/prune the file list.
+4. Claude reads scoped files, compacts context, and drafts synthesis to a named output file (e.g. `synthesis-YYYY-MM-DD.md`).
+5. Review: `git -C Research diff` and `git status`
+6. If reliable, convert to a reusable research skill.
+
+**Recursive hardening loop** (when Claude fails):
+- Capture the exact error or bad output (save to a file or note).
+- Feed it back: "You failed here. This is the exact error/output. Fix the workflow."
+- After a good fix, update the relevant `.claude-skills-*.md` and the 05_Store entry's Notes field.
+- Commit the skill update.
+
+---
+
 ### 1M Context Window
 
 Use for large codebases or research corpora. Watch `/context`; compact before hitting the ceiling.

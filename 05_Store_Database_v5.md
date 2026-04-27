@@ -683,6 +683,59 @@ Uses `~/.venvs/rag` for isolation, ChromaDB at `~/.local/share/rag/chroma`, and 
 
 ---
 
+### Claude Code Code-Edit Session (Standard)
+- **Use Case:** ai-terminal | **OS:** macOS | **Risk:** 🟡 Yellow (writes files)
+- **Command:**
+  ```bash
+  # 1. Enter project root and start Claude Code
+  cd <project-root> && claude
+
+  # 2. In Claude Code — Shift+Tab to Plan Mode
+  # 3. Prompt:
+  # "Scan <src/> for <task>. Propose a numbered todo list. Wait for my approval before touching any file."
+
+  # 4. After approval and edits:
+  git diff
+  git status
+
+  # 5. If run was successful and repeatable:
+  # Ask Claude: "Summarize what you just did as a .claude-skills-*.md skill file (name, description, numbered steps). Save it to .claude-skills-<name>.md"
+  ```
+- **What it does:** Controlled file-edit session using Plan Mode, explicit plan approval, and mandatory git review before committing. Safe pattern for any code change via Claude Code.
+- **Tested:** 2026-04-27 | ✅ Verified
+- **Notes:** Never skip Plan Mode for file-writing. Always run git diff before committing. Promote reliable sessions to a skill file.
+
+---
+
+### Claude Code Multi-File Research Synthesis
+- **Use Case:** ai-terminal | **OS:** macOS | **Risk:** 🟡 Yellow (writes synthesis file)
+- **Command:**
+  ```bash
+  # 1. Enter research root and start Claude Code
+  cd ~/Research && claude
+
+  # 2. Shift+Tab to Plan Mode
+  # 3. Prompt:
+  # "List all .md and .txt files in <subfolder> modified since <date>. Show me the list and wait for my approval before reading any file."
+
+  # 4. Approve/prune the file list.
+  # 5. Let Claude read, compact, and synthesize.
+  # 6. Ask Claude to save output to a named file:
+  # "Write the synthesis to synthesis-$(date +%Y-%m-%d).md"
+
+  # 7. Review result:
+  git -C ~/Research diff
+  git status
+
+  # 8. Promote to a skill:
+  # "Summarize this workflow as a .claude-skills-research-synthesis.md skill."
+  ```
+- **What it does:** Scoped multi-file research synthesis with Plan Mode approval gate on the file list. Prevents context blowout by having Claude list and wait before reading. Ends with a named artifact and git review.
+- **Tested:** 2026-04-27 | ✅ Verified
+- **Notes:** Always approve the file list before Claude reads. Use `compact` command if context gets large. Review synthesis before committing.
+
+---
+
 ### AI Command Generation (zsh-ai-assist)
 - **Use Case:** ai-terminal | **OS:** macOS | **Risk:** 🟡 Yellow (review before running)
 - **Command:**
