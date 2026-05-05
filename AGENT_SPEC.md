@@ -210,7 +210,7 @@ data/
 |---|---|---|---|---|---|---|---|
 | research-agent | redbeard-alt/research-agent | `agent/` ❌ rename to `research_agent/` | `run.py` ❌ rename to `cli.py` | ❌ missing | ✅ `docs/workflow.md` | FAISS ❌ migrate to LanceDB | 🔴 needs work |
 | audio-agent | redbeard-alt/audio-agent | `audio_agent/` ✅ | `cli.py` ✅ | ✅ exists | ✅ `docs/workflow.md` | LanceDB ✅ (Ollama embed — approved exception) | 🟢 compliant |
-| newsletter-agent | redbeard-alt/newsletter-agent | `newsletter_agent/` ✅ | `cli.py` ✅ | ❌ missing | ❌ missing | none ✅ N/A | 🟡 minor gaps |
+| newsletter-agent | redbeard-alt/newsletter-agent | `newsletter_agent/` ✅ | `cli.py` ✅ | ✅ exists | ✅ `docs/workflow.md` | none ✅ N/A | 🟡 PR #6 pending (requirements.txt pinning) |
 
 ---
 
@@ -242,11 +242,15 @@ data/
 
 ### newsletter-agent
 
-- [ ] Add `CLAUDE.md`
-- [ ] Add `docs/workflow.md`
-- [ ] Verify `Makefile` has all five required targets
-- [ ] Verify `.env.example` covers all standard vars
-- [ ] Verify `requirements.txt` is pinned
+- [x] `newsletter_agent/` package with `__init__.py` and `_paths.py`
+- [x] `cli.py` at repo root with subcommands
+- [x] `CLAUDE.md`
+- [x] `docs/workflow.md`
+- [x] `README.md`
+- [x] `Makefile` — all five required targets (`install`, `run`, `test`, `lint`, `clean`)
+- [x] `.env.example` — all standard spec vars + `OLLAMA_HOST` rename
+- [x] `.claude/skills/.gitkeep`
+- [ ] `requirements.txt` — pin to exact versions (PR #6 open)
 
 ---
 
