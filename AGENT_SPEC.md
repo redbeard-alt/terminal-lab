@@ -103,6 +103,17 @@ def embed(texts: list[str]) -> list[list[float]]:
     return model.encode(texts).tolist()
 ```
 
+### Approved exception — audio-agent
+
+`audio-agent` uses `nomic-embed-text` via Ollama (`store/embed.py`) instead of
+`sentence-transformers/all-MiniLM-L6-v2`. This is an **approved deviation**.
+
+Rationale: audio-agent has a strict default-to-local / Tier 0 posture for sensitive
+audio (voice memos, meetings, phone calls). Ollama keeps embeddings fully on-device
+without a separate Python library, and `nomic-embed-text` outperforms MiniLM-L6-v2
+on longer text (transcripts). The deviation is intentional and must not be
+"fixed" to match the standard.
+
 ---
 
 ## 5. Claude Skills Path
@@ -198,7 +209,7 @@ data/
 | Agent | Repo | Package Dir | cli.py | CLAUDE.md | docs/ | RAG Backend | Status |
 |---|---|---|---|---|---|---|---|
 | research-agent | redbeard-alt/research-agent | `agent/` ❌ rename to `research_agent/` | `run.py` ❌ rename to `cli.py` | ❌ missing | ✅ `docs/workflow.md` | FAISS ❌ migrate to LanceDB | 🔴 needs work |
-| audio-agent | redbeard-alt/audio-agent | ❌ no package dir | ❌ missing | ✅ exists | ❌ missing | none ✅ adopt LanceDB | 🔴 scaffold needed |
+| audio-agent | redbeard-alt/audio-agent | `audio_agent/` ✅ | `cli.py` ✅ | ✅ exists | ✅ `docs/workflow.md` | LanceDB ✅ (Ollama embed — approved exception) | 🟢 compliant |
 | newsletter-agent | redbeard-alt/newsletter-agent | `newsletter_agent/` ✅ | `cli.py` ✅ | ❌ missing | ❌ missing | none ✅ N/A | 🟡 minor gaps |
 
 ---
@@ -219,15 +230,15 @@ data/
 
 ### audio-agent
 
-- [ ] Create `audio_agent/` package with `__init__.py` and `_paths.py`
-- [ ] Create `cli.py` at repo root with subcommands
-- [ ] Add `CLAUDE.md`
-- [ ] Add `docs/workflow.md`
-- [ ] Scaffold `audio_agent/index.py` and `audio_agent/search.py` with LanceDB
-- [ ] Add `.env.example` with all standard vars
-- [ ] Add `requirements.txt` with pinned deps
-- [ ] Add `Makefile` with all five required targets
-- [ ] Add `README.md` covering purpose, setup, usage, architecture
+- [x] Create `audio_agent/` package with `__init__.py` and `_paths.py`
+- [x] Create `cli.py` at repo root with subcommands
+- [x] Add `CLAUDE.md`
+- [x] Add `docs/workflow.md`
+- [x] Scaffold `store/embed.py` and `store/rag_search.py` with LanceDB (Ollama embed — approved exception)
+- [x] Add `.env.example` with all standard vars
+- [x] Add `requirements.txt` with pinned deps
+- [x] Add `Makefile` with all five required targets
+- [x] Add `README.md` covering purpose, setup, usage, architecture
 
 ### newsletter-agent
 
