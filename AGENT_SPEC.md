@@ -210,7 +210,7 @@ data/
 |---|---|---|---|---|---|---|---|
 | research-agent | redbeard-alt/research-agent | `agent/` ❌ rename to `research_agent/` | `run.py` ❌ rename to `cli.py` | ❌ missing | ✅ `docs/workflow.md` | FAISS ❌ migrate to LanceDB | 🔴 needs work |
 | audio-agent | redbeard-alt/audio-agent | `audio_agent/` ✅ | `cli.py` ✅ | ✅ exists | ✅ `docs/workflow.md` | LanceDB ✅ (Ollama embed — approved exception) | 🟢 compliant |
-| newsletter-agent | redbeard-alt/newsletter-agent | `newsletter_agent/` ✅ | `cli.py` ✅ | ✅ exists | ✅ `docs/workflow.md` | none ✅ N/A | 🟡 PR #6 pending (requirements.txt pinning) |
+| newsletter-agent | redbeard-alt/newsletter-agent | `newsletter_agent/` ✅ | `cli.py` ✅ | ✅ exists | ✅ `docs/workflow.md` | none ✅ N/A | 🟢 compliant |
 
 ---
 
@@ -250,7 +250,7 @@ data/
 - [x] `Makefile` — all five required targets (`install`, `run`, `test`, `lint`, `clean`)
 - [x] `.env.example` — all standard spec vars + `OLLAMA_HOST` rename
 - [x] `.claude/skills/.gitkeep`
-- [ ] `requirements.txt` — pin to exact versions (PR #6 open)
+- [x] `requirements.txt` — pinned to exact versions (PR #6 merged)
 
 ---
 
