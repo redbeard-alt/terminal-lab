@@ -208,7 +208,7 @@ data/
 
 | Agent | Repo | Package Dir | cli.py | CLAUDE.md | docs/ | RAG Backend | Status |
 |---|---|---|---|---|---|---|---|
-| research-agent | redbeard-alt/research-agent | `agent/` ❌ rename to `research_agent/` | `run.py` ❌ rename to `cli.py` | ❌ missing | ✅ `docs/workflow.md` | FAISS ❌ migrate to LanceDB | 🔴 needs work |
+| research-agent | redbeard-alt/research-agent | `research_agent/` ✅ | `cli.py` ✅ | ✅ exists | ✅ `docs/workflow.md` | LanceDB ✅ | 🟢 compliant |
 | audio-agent | redbeard-alt/audio-agent | `audio_agent/` ✅ | `cli.py` ✅ | ✅ exists | ✅ `docs/workflow.md` | LanceDB ✅ (Ollama embed — approved exception) | 🟢 compliant |
 | newsletter-agent | redbeard-alt/newsletter-agent | `newsletter_agent/` ✅ | `cli.py` ✅ | ✅ exists | ✅ `docs/workflow.md` | none ✅ N/A | 🟢 compliant |
 
@@ -218,15 +218,16 @@ data/
 
 ### research-agent
 
-- [ ] Rename `agent/` → `research_agent/`
-- [ ] Update all imports from `agent.` → `research_agent.`
-- [ ] Rename `run.py` → `cli.py`; add `argparse`/`click` subcommands
-- [ ] Add `CLAUDE.md`
-- [ ] Replace FAISS with LanceDB in `research_agent/index.py` and `research_agent/search.py`
-- [ ] Add `LANCE_DB_PATH` to `.env.example`
-- [ ] Add `requirements.txt` with pinned deps including `lancedb`, `sentence-transformers`
-- [ ] Verify `Makefile` has all five required targets
-- [ ] Verify `docs/workflow.md` exists and is current
+- [x] Rename `agent/` → `research_agent/`
+- [x] Update all imports from `agent.` → `research_agent.`
+- [x] `cli.py` at repo root with click subcommands ✅ (was already cli.py; run.py preserved as legacy shim)
+- [x] `CLAUDE.md` ✅ (was already present end of Thread 7)
+- [x] LanceDB backend ✅ (was already LanceDB — FAISS migration was unnecessary; spec was stale)
+- [x] `LANCE_DB_PATH` in `.env.example` ✅
+- [x] `requirements.txt` pinned to exact versions (PR #11)
+- [x] `Makefile` has all five required targets ✅
+- [x] `docs/workflow.md` exists and is current ✅
+- [x] `research_agent/_paths.py` ✅ (PR #10)
 
 ### audio-agent
 
@@ -254,4 +255,4 @@ data/
 
 ---
 
-*Last updated: May 2026*
+*Last updated: May 2026 — Thread 8 complete. All three agents 🟢 compliant.*
