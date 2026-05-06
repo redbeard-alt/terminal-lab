@@ -1,0 +1,14 @@
+# Terminal Lab
+
+Terminal command and local AI workflow lab for macOS Tahoe 26 on Apple Silicon.
+
+## Defaults
+- GitHub is the source of truth for docs, scripts, and container definitions.
+- OrbStack is the default local Docker runtime on this workstation.
+- Keep Docker CLI compatibility in commands and Compose files.
+- Never commit secrets, `.env`, SSH keys, or `.zshenv`.
+
+## Layout
+- `docker/compose/` tracked local stacks
+- `docker/env/` examples only, no real secrets
+- `scripts/` helper wrappers
